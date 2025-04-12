@@ -21,6 +21,7 @@ export const DrawingCanvas = () => {
 		x: number;
 		y: number;
 	}>({ x: 0, y: 0 });
+	const [showCursor, setShowCursor] = useState(false);
 	const { toast } = useToast();
 	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -34,7 +35,7 @@ export const DrawingCanvas = () => {
 
 	// Add custom cursor element
 	const CustomCursor = () => {
-		if (!isEraser) return null;
+		if (!isEraser || !showCursor) return null;
 
 		return (
 			<div
@@ -253,6 +254,8 @@ export const DrawingCanvas = () => {
 						touchAction: "none",
 						...cursorStyle,
 					}}
+					onMouseEnter={() => setShowCursor(true)}
+					onMouseLeave={() => setShowCursor(false)}
 					onMouseDown={startDrawing}
 					onMouseUp={endDrawing}
 					onMouseOut={endDrawing}
@@ -263,9 +266,31 @@ export const DrawingCanvas = () => {
 							setCursorPosition({ x: e.clientX, y: e.clientY });
 						}
 					}}
-					onTouchStart={startDrawing}
-					onTouchEnd={endDrawing}
-					onTouchMove={draw}
+					onTouchStart={(e) => {
+						startDrawing(e);
+						if (isEraser) {
+							const touch = e.touches[0];
+							setCursorPosition({
+								x: touch.clientX,
+								y: touch.clientY,
+							});
+							setShowCursor(true);
+						}
+					}}
+					onTouchEnd={(e) => {
+						endDrawing();
+						setShowCursor(false);
+					}}
+					onTouchMove={(e) => {
+						draw(e);
+						if (isEraser) {
+							const touch = e.touches[0];
+							setCursorPosition({
+								x: touch.clientX,
+								y: touch.clientY,
+							});
+						}
+					}}
 				></canvas>
 			</div>
 		</div>
