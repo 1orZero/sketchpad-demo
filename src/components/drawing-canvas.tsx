@@ -251,18 +251,6 @@ export const DrawingCanvas = () => {
 					))}
 				</div>
 
-				{/* Clear Canvas Button */}
-				<Button variant="outline" onClick={clearCanvas}>
-					<Icons.trash className="w-4 h-4 mr-2" />
-					Clear Canvas
-				</Button>
-
-				{/* Export Button */}
-				<Button variant="outline" onClick={exportCanvas}>
-					<Download className="w-4 h-4 mr-2" />
-					Export
-				</Button>
-
 				{/* Pen Toggle */}
 				<Button
 					variant={isEraser ? "outline" : "default"}
@@ -292,6 +280,18 @@ export const DrawingCanvas = () => {
 					}}
 				>
 					<Icons.eraser className="w-4 h-4" />
+				</Button>
+
+				{/* Clear Canvas Button */}
+				<Button variant="outline" onClick={clearCanvas}>
+					<Icons.trash className="w-4 h-4 mr-2" />
+					Clear Canvas
+				</Button>
+
+				{/* Export Button */}
+				<Button variant="outline" onClick={exportCanvas}>
+					<Download className="w-4 h-4 mr-2" />
+					Export
 				</Button>
 			</div>
 
