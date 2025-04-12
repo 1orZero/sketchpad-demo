@@ -26,6 +26,7 @@ import {
 	User,
 	X,
 	Workflow,
+	Pen,
 } from "lucide-react";
 
 const Icons = {
@@ -57,6 +58,7 @@ const Icons = {
 	spinner: Loader2,
 	trash: Trash,
 	user: User,
+	pen: Pen,
 };
 
 export { Icons };

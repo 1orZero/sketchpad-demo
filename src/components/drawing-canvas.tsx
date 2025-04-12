@@ -3,9 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { GithubPicker } from "react-color";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import { Icons } from "@/components/icons";
 import { useToast } from "@/hooks/use-toast";
+import { Circle } from "lucide-react";
 
 export const DrawingCanvas = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,6 +19,13 @@ export const DrawingCanvas = () => {
 	} | null>(null);
 	const { toast } = useToast();
 	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+	// Define stroke sizes
+	const strokeSizes = [
+		{ size: 2, icon: <Circle size={10} />, label: "Small" },
+		{ size: 5, icon: <Circle size={16} />, label: "Medium" },
+		{ size: 10, icon: <Circle size={20} />, label: "Large" },
+	];
 
 	useEffect(() => {
 		const updateDimensions = () => {
@@ -86,7 +93,7 @@ export const DrawingCanvas = () => {
 		if (!ctx) return;
 
 		ctx.strokeStyle = isEraser ? "#FFFFFF" : strokeColor;
-		ctx.lineWidth = strokeWidth;
+		ctx.lineWidth = isEraser ? strokeWidth * 4 : strokeWidth;
 
 		const rect = canvas.getBoundingClientRect();
 		let x, y;
@@ -151,20 +158,22 @@ export const DrawingCanvas = () => {
 					/>
 				</div>
 
-				{/* Stroke Width Adjustment */}
+				{/* Stroke Width Buttons */}
 				<div className="flex items-center gap-2">
-					<label htmlFor="strokeWidth" className="text-sm">
-						Stroke Width:
-					</label>
-					<Slider
-						id="strokeWidth"
-						defaultValue={[strokeWidth]}
-						max={20}
-						min={1}
-						step={1}
-						onValueChange={(value) => setStrokeWidth(value[0])}
-					/>
-					<span className="text-sm">{strokeWidth}</span>
+					{strokeSizes.map(({ size, icon, label }) => (
+						<Button
+							key={size}
+							variant={
+								strokeWidth === size ? "default" : "outline"
+							}
+							size="icon"
+							className={`[&_svg]:size-[${size}]`}
+							onClick={() => setStrokeWidth(size)}
+							title={label}
+						>
+							{icon}
+						</Button>
+					))}
 				</div>
 
 				{/* Clear Canvas Button */}
@@ -173,13 +182,19 @@ export const DrawingCanvas = () => {
 					Clear Canvas
 				</Button>
 
+				{/* Pen Toggle */}
+				<Button
+					variant={isEraser ? "outline" : "default"}
+					onClick={() => setIsEraser(false)}
+				>
+					<Icons.pen className="w-4 h-4" />
+				</Button>
 				{/* Eraser Toggle */}
 				<Button
-					variant={isEraser ? "secondary" : "outline"}
+					variant={isEraser ? "default" : "outline"}
 					onClick={() => setIsEraser(!isEraser)}
 				>
-					<Icons.eraser className="w-4 h-4 mr-2" />
-					Eraser
+					<Icons.eraser className="w-4 h-4" />
 				</Button>
 			</div>
 
