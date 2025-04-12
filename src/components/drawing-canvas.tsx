@@ -19,6 +19,24 @@ export const DrawingCanvas = () => {
 	const [suggestions, setSuggestions] = useState<string[]>([]);
 	const { toast } = useToast();
 	const [isLoading, setIsLoading] = useState(false);
+	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+	useEffect(() => {
+		const updateDimensions = () => {
+			setDimensions({
+				width: window.innerWidth,
+				height: window.innerHeight - 150,
+			});
+		};
+
+		// Initial dimensions
+		updateDimensions();
+
+		// Update dimensions on resize
+		window.addEventListener("resize", updateDimensions);
+		return () => window.removeEventListener("resize", updateDimensions);
+	}, []);
+
 	const suggestDrawing = () => {
 		alert("suggestDrawing");
 	};
@@ -272,8 +290,8 @@ export const DrawingCanvas = () => {
 			{/* Drawing Canvas */}
 			<canvas
 				ref={canvasRef}
-				width={window.innerWidth}
-				height={window.innerHeight - 150} // Subtract toolbar height
+				width={dimensions.width}
+				height={dimensions.height}
 				className="touch-none bg-white border-2 border-light-gray"
 				style={{ touchAction: "none" }}
 				onMouseDown={startDrawing}
