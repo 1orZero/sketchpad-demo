@@ -11,6 +11,7 @@ export const DrawingCanvas = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [isDrawing, setIsDrawing] = useState(false);
 	const [strokeColor, setStrokeColor] = useState("#000000");
+	const [isEraser, setIsEraser] = useState(false);
 	const [strokeWidth, setStrokeWidth] = useState(5);
 	const [lastPosition, setLastPosition] = useState<{
 		x: number;
@@ -84,7 +85,7 @@ export const DrawingCanvas = () => {
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 
-		ctx.strokeStyle = strokeColor;
+		ctx.strokeStyle = isEraser ? "#FFFFFF" : strokeColor;
 		ctx.lineWidth = strokeWidth;
 
 		const rect = canvas.getBoundingClientRect();
@@ -170,6 +171,15 @@ export const DrawingCanvas = () => {
 				<Button variant="outline" onClick={clearCanvas}>
 					<Icons.trash className="w-4 h-4 mr-2" />
 					Clear Canvas
+				</Button>
+
+				{/* Eraser Toggle */}
+				<Button
+					variant={isEraser ? "secondary" : "outline"}
+					onClick={() => setIsEraser(!isEraser)}
+				>
+					<Icons.eraser className="w-4 h-4 mr-2" />
+					Eraser
 				</Button>
 			</div>
 
