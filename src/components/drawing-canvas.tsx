@@ -42,8 +42,8 @@ export const DrawingCanvas = () => {
 				style={{
 					position: "fixed",
 					pointerEvents: "none",
-					width: strokeWidth * 4,
-					height: strokeWidth * 4,
+					width: strokeWidth * 13,
+					height: strokeWidth * 13,
 					border: "2px solid #999",
 					borderRadius: "50%",
 					backgroundColor: "rgba(255, 255, 255, 0.3)",
@@ -144,7 +144,7 @@ export const DrawingCanvas = () => {
 			// For eraser, fill a circle at the current position
 			ctx.fillStyle = "#FFFFFF";
 			ctx.beginPath();
-			ctx.arc(x, y, strokeWidth * 2, 0, Math.PI * 2);
+			ctx.arc(x, y, strokeWidth * 6, 0, Math.PI * 6);
 			ctx.fill();
 		} else {
 			// For pen, draw a line as before
