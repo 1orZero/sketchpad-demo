@@ -67,7 +67,7 @@ export const DrawingCanvas = () => {
 		const updateDimensions = () => {
 			setDimensions({
 				width: window.innerWidth,
-				height: window.innerHeight - 150,
+				height: window.innerHeight,
 			});
 		};
 
