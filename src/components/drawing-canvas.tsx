@@ -17,8 +17,43 @@ export const DrawingCanvas = () => {
 		x: number;
 		y: number;
 	} | null>(null);
+	const [cursorPosition, setCursorPosition] = useState<{
+		x: number;
+		y: number;
+	}>({ x: 0, y: 0 });
 	const { toast } = useToast();
 	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+	// Add cursor style based on tool
+	const cursorStyle: React.CSSProperties = isEraser
+		? {
+				cursor: "none",
+				position: "relative" as const,
+		  }
+		: {};
+
+	// Add custom cursor element
+	const CustomCursor = () => {
+		if (!isEraser) return null;
+
+		return (
+			<div
+				style={{
+					position: "fixed",
+					pointerEvents: "none",
+					width: strokeWidth * 4,
+					height: strokeWidth * 4,
+					border: "2px solid #999",
+					borderRadius: "50%",
+					backgroundColor: "rgba(255, 255, 255, 0.3)",
+					transform: "translate(-50%, -50%)",
+					zIndex: 1000,
+					left: cursorPosition.x,
+					top: cursorPosition.y,
+				}}
+			/>
+		);
+	};
 
 	// Define stroke sizes
 	const strokeSizes = [
@@ -92,9 +127,6 @@ export const DrawingCanvas = () => {
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 
-		ctx.strokeStyle = isEraser ? "#FFFFFF" : strokeColor;
-		ctx.lineWidth = isEraser ? strokeWidth * 4 : strokeWidth;
-
 		const rect = canvas.getBoundingClientRect();
 		let x, y;
 
@@ -107,11 +139,22 @@ export const DrawingCanvas = () => {
 			y = (e as React.MouseEvent<HTMLCanvasElement>).clientY - rect.top;
 		}
 
-		if (lastPosition) {
+		if (isEraser) {
+			// For eraser, fill a circle at the current position
+			ctx.fillStyle = "#FFFFFF";
 			ctx.beginPath();
-			ctx.moveTo(lastPosition.x, lastPosition.y);
-			ctx.lineTo(x, y);
-			ctx.stroke();
+			ctx.arc(x, y, strokeWidth * 2, 0, Math.PI * 2);
+			ctx.fill();
+		} else {
+			// For pen, draw a line as before
+			ctx.strokeStyle = strokeColor;
+			ctx.lineWidth = strokeWidth;
+			if (lastPosition) {
+				ctx.beginPath();
+				ctx.moveTo(lastPosition.x, lastPosition.y);
+				ctx.lineTo(x, y);
+				ctx.stroke();
+			}
 		}
 
 		setLastPosition({ x, y });
@@ -199,20 +242,32 @@ export const DrawingCanvas = () => {
 			</div>
 
 			{/* Drawing Canvas */}
-			<canvas
-				ref={canvasRef}
-				width={dimensions.width}
-				height={dimensions.height}
-				className="touch-none bg-white border-2 border-light-gray"
-				style={{ touchAction: "none" }}
-				onMouseDown={startDrawing}
-				onMouseUp={endDrawing}
-				onMouseOut={endDrawing}
-				onMouseMove={draw}
-				onTouchStart={startDrawing}
-				onTouchEnd={endDrawing}
-				onTouchMove={draw}
-			></canvas>
+			<div style={{ position: "relative" }}>
+				<CustomCursor />
+				<canvas
+					ref={canvasRef}
+					width={dimensions.width}
+					height={dimensions.height}
+					className="touch-none bg-white border-2 border-light-gray"
+					style={{
+						touchAction: "none",
+						...cursorStyle,
+					}}
+					onMouseDown={startDrawing}
+					onMouseUp={endDrawing}
+					onMouseOut={endDrawing}
+					onMouseMove={(e) => {
+						draw(e);
+						// Update custom cursor position
+						if (isEraser) {
+							setCursorPosition({ x: e.clientX, y: e.clientY });
+						}
+					}}
+					onTouchStart={startDrawing}
+					onTouchEnd={endDrawing}
+					onTouchMove={draw}
+				></canvas>
+			</div>
 		</div>
 	);
 };
