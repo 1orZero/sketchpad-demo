@@ -5,7 +5,7 @@ import { GithubPicker } from "react-color";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { useToast } from "@/hooks/use-toast";
-import { Circle } from "lucide-react";
+import { Circle, Download } from "lucide-react";
 
 export const DrawingCanvas = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -176,6 +176,31 @@ export const DrawingCanvas = () => {
 		ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill with color
 	};
 
+	const exportCanvas = () => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		// Create a temporary canvas to ensure white background
+		const tempCanvas = document.createElement("canvas");
+		tempCanvas.width = canvas.width;
+		tempCanvas.height = canvas.height;
+		const tempCtx = tempCanvas.getContext("2d");
+		if (!tempCtx) return;
+
+		// Fill with white background
+		tempCtx.fillStyle = "#FFFFFF";
+		tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+
+		// Draw the original canvas content
+		tempCtx.drawImage(canvas, 0, 0);
+
+		// Create a temporary link element
+		const link = document.createElement("a");
+		link.download = "drawing.png";
+		link.href = tempCanvas.toDataURL("image/png");
+		link.click();
+	};
+
 	return (
 		<div className="flex flex-col h-screen">
 			{/* Toolbar */}
@@ -230,6 +255,12 @@ export const DrawingCanvas = () => {
 				<Button variant="outline" onClick={clearCanvas}>
 					<Icons.trash className="w-4 h-4 mr-2" />
 					Clear Canvas
+				</Button>
+
+				{/* Export Button */}
+				<Button variant="outline" onClick={exportCanvas}>
+					<Download className="w-4 h-4 mr-2" />
+					Export
 				</Button>
 
 				{/* Pen Toggle */}
