@@ -42,8 +42,8 @@ export const DrawingCanvas = () => {
 				style={{
 					position: "fixed",
 					pointerEvents: "none",
-					width: strokeWidth * 13,
-					height: strokeWidth * 13,
+					width: strokeWidth * 8,
+					height: strokeWidth * 8,
 					border: "2px solid #999",
 					borderRadius: "50%",
 					backgroundColor: "rgba(255, 255, 255, 0.3)",
@@ -144,7 +144,7 @@ export const DrawingCanvas = () => {
 			// For eraser, fill a circle at the current position
 			ctx.fillStyle = "#FFFFFF";
 			ctx.beginPath();
-			ctx.arc(x, y, strokeWidth * 6, 0, Math.PI * 6);
+			ctx.arc(x, y, strokeWidth * 4, 0, Math.PI * 4);
 			ctx.fill();
 		} else {
 			// For pen, draw a line as before
@@ -185,9 +185,11 @@ export const DrawingCanvas = () => {
 					<GithubPicker
 						triangle="hide"
 						color={strokeColor}
-						onChange={(color: { hex: string }) =>
-							setStrokeColor(color.hex)
-						}
+						onChange={(color: { hex: string }) => {
+							setStrokeColor(color.hex);
+							setIsEraser(false);
+							setShowCursor(false);
+						}}
 						width="212px"
 						colors={[
 							"#000000",
