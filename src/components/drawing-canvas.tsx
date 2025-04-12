@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { HexColorPicker } from "react-colorful";
+import { GithubPicker } from "react-color";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Icons } from "@/components/icons";
@@ -130,9 +130,23 @@ export const DrawingCanvas = () => {
 			<div className="flex flex-wrap items-center justify-center gap-4 p-4 bg-secondary">
 				{/* Color Picker */}
 				<div>
-					<HexColorPicker
+					<GithubPicker
+						triangle="hide"
 						color={strokeColor}
-						onChange={setStrokeColor}
+						onChange={(color: { hex: string }) =>
+							setStrokeColor(color.hex)
+						}
+						width="212px"
+						colors={[
+							"#000000",
+							"#B80000",
+							"#DB3E00",
+							"#FCCB00",
+							"#008B02",
+							"#1273DE",
+							"#004DCF",
+							"#5300EB",
+						]}
 					/>
 				</div>
 
