@@ -213,6 +213,10 @@ export const DrawingCanvas = () => {
 							size="icon"
 							className={`[&_svg]:size-[${size}]`}
 							onClick={() => setStrokeWidth(size)}
+							onTouchEnd={(e) => {
+								e.preventDefault();
+								setStrokeWidth(size);
+							}}
 							title={label}
 						>
 							{icon}
@@ -229,14 +233,30 @@ export const DrawingCanvas = () => {
 				{/* Pen Toggle */}
 				<Button
 					variant={isEraser ? "outline" : "default"}
-					onClick={() => setIsEraser(false)}
+					onClick={() => {
+						setIsEraser(false);
+						setShowCursor(false);
+					}}
+					onTouchEnd={(e) => {
+						e.preventDefault();
+						setIsEraser(false);
+						setShowCursor(false);
+					}}
 				>
 					<Icons.pen className="w-4 h-4" />
 				</Button>
 				{/* Eraser Toggle */}
 				<Button
 					variant={isEraser ? "default" : "outline"}
-					onClick={() => setIsEraser(!isEraser)}
+					onClick={() => {
+						setIsEraser(true);
+						setShowCursor(false);
+					}}
+					onTouchEnd={(e) => {
+						e.preventDefault();
+						setIsEraser(true);
+						setShowCursor(false);
+					}}
 				>
 					<Icons.eraser className="w-4 h-4" />
 				</Button>
