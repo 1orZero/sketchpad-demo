@@ -22,6 +22,8 @@ export const DrawingCanvas = () => {
 		y: number;
 	}>({ x: 0, y: 0 });
 	const [showCursor, setShowCursor] = useState(false);
+	const { toast } = useToast();
+	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
 	// Add cursor style based on tool
 	const cursorStyle: React.CSSProperties = isEraser
@@ -60,6 +62,19 @@ export const DrawingCanvas = () => {
 		{ size: 5, icon: <Circle size={16} />, label: "Medium" },
 		{ size: 10, icon: <Circle size={20} />, label: "Large" },
 	];
+
+	useEffect(() => {
+		const updateDimensions = () => {
+			if (canvasRef.current) {
+				setDimensions({
+					width: canvasRef.current.clientWidth,
+					height: canvasRef.current.clientHeight,
+				});
+			}
+		};
+
+		updateDimensions();
+	}, [canvasRef.current]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -282,6 +297,8 @@ export const DrawingCanvas = () => {
 				<CustomCursor />
 				<canvas
 					ref={canvasRef}
+					height={dimensions.height}
+					width={dimensions.width}
 					className="w-full h-full touch-none bg-white border-2 border-light-gray"
 					style={{
 						touchAction: "none",
