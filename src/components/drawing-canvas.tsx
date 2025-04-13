@@ -22,8 +22,6 @@ export const DrawingCanvas = () => {
 		y: number;
 	}>({ x: 0, y: 0 });
 	const [showCursor, setShowCursor] = useState(false);
-	const { toast } = useToast();
-	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
 	// Add cursor style based on tool
 	const cursorStyle: React.CSSProperties = isEraser
@@ -62,22 +60,6 @@ export const DrawingCanvas = () => {
 		{ size: 5, icon: <Circle size={16} />, label: "Medium" },
 		{ size: 10, icon: <Circle size={20} />, label: "Large" },
 	];
-
-	useEffect(() => {
-		const updateDimensions = () => {
-			setDimensions({
-				width: window.innerWidth,
-				height: window.innerHeight,
-			});
-		};
-
-		// Initial dimensions
-		updateDimensions();
-
-		// Update dimensions on resize
-		window.addEventListener("resize", updateDimensions);
-		return () => window.removeEventListener("resize", updateDimensions);
-	}, []);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -202,7 +184,7 @@ export const DrawingCanvas = () => {
 	};
 
 	return (
-		<div className="flex flex-col h-screen">
+		<div className="flex flex-col h-[100dvh]">
 			{/* Toolbar */}
 			<div className="flex flex-wrap items-center justify-center gap-4 p-4 bg-secondary">
 				{/* Color Picker */}
@@ -296,13 +278,11 @@ export const DrawingCanvas = () => {
 			</div>
 
 			{/* Drawing Canvas */}
-			<div style={{ position: "relative" }}>
+			<div className="relative flex-1">
 				<CustomCursor />
 				<canvas
 					ref={canvasRef}
-					width={dimensions.width}
-					height={dimensions.height}
-					className="touch-none bg-white border-2 border-light-gray"
+					className="w-full h-full touch-none bg-white border-2 border-light-gray"
 					style={{
 						touchAction: "none",
 						...cursorStyle,
